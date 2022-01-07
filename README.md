@@ -19,3 +19,7 @@ You can publish a message like so
 ```
 node publisher <pub port> <'message'>
 ```
+
+### Architecture Diagram
+
+![image info](./diagrams/ArchitectureDiagram.jpg)
