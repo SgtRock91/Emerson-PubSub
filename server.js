@@ -1,35 +1,37 @@
+// invoke example
+// node server <subscribe port> <publish port>
 const net = require('net');
+
+const subPort = process.argv[2];
+const pubPort = process.argv[3];
 
 //current subscribers to send a published message to
 let subscribers = [];
 
-
-
-//create subscribe port
+//create subscribe port for subs to hook into
 const subscribeSocket = net.createServer((socket) => {
     socket.on('data', (data) => {
-        //get port
-        const subscriptPort = data.toString();
-        console.log('subscriber port received: ' + subscriptPort);
+        //get port from data
+        const subscriberPort = data.toString();
+        console.log('subscriber port received: ' + subscriberPort);
 
         //add subscriber
-        subscribers = subscribers.concat(subscriptPort)
+        subscribers = subscribers.concat(subscriberPort)
 
-        //let sender know we got the their message
-        //socket.write('port received ' + subscriptPort);
+        //let sender know we got the their message so they can close out
+        socket.write('subscribed');
         socket.pipe(socket);
     })
 });
-//subscribers send to this port to sign up for messages
-subscribeSocket.listen(4000, '127.0.0.1');
-console.log('subscribe listener on 4000');
-
+//subscribers send to this port to sign up for published messages
+subscribeSocket.listen(subPort, '127.0.0.1');
+console.log('subscribe listener on ' + subPort);
 
 
 //create publish port
 const publishSocket = net.createServer((socket) => {
     socket.on('data', (data) => {
-        //get message
+        //get message from data
         const message = data.toString();
         console.log('publishing message: ' + message);
 
@@ -41,11 +43,11 @@ const publishSocket = net.createServer((socket) => {
             });
         })
 
-        //let sender know we got the their message
-        socket.write('messae received and sent to subscribers');
+        //let sender know we got the their message so they can close out
+        socket.write('message sent');
         socket.pipe(socket);
     })
 });
 //subscribers send to this port to sign up for messages
-publishSocket.listen(4001, '127.0.0.1');
-console.log('publish listener on 4001');
+publishSocket.listen(pubPort, '127.0.0.1');
+console.log('publish listener on ' + pubPort);
