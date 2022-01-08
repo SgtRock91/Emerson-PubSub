@@ -27,7 +27,7 @@ You can publish a message like so
 ```
 node publisher <pub port> <'message'>
 ```
-Can use default port 400 and message of MSG with
+Can use default port 4000 and message of MSG with
 ```
 npm run pub
 ```
