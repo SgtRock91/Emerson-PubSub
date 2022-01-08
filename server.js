@@ -1,8 +1,9 @@
-// invoke example
-// node server <subscribe port> <publish port>
 const net = require('net');
+const { processInput, validateNumber } = require('./shared/input');
 
-const localhost = '127.0.0.1';
+const LOCALHOST = '127.0.0.1';
+const USAGE = 'node server <subscribe port> <publish port>';
+
 //current subscribers to send a published message to
 let subscribers = [];
 
@@ -24,7 +25,7 @@ const initSubscribe = (subPort) => {
     });
 
     //subscribers send to this port to sign up for published messages
-    subscribeSocket.listen(subPort, localhost);
+    subscribeSocket.listen(subPort, LOCALHOST);
     console.log('subscribe listener on ' + subPort);
 };
 
@@ -38,7 +39,7 @@ const initPublish = (pubPort) => {
 
             subscribers.forEach((subscriber) => {
                 const client = new net.Socket();
-                client.connect(subscriber, localhost, () => {
+                client.connect(subscriber, LOCALHOST, () => {
                     client.write(message);
                     client.destroy();
                 });
@@ -47,20 +48,26 @@ const initPublish = (pubPort) => {
             //let sender know we got the their message so they can close out
             socket.write('message sent');
             socket.pipe(socket);
-        })
+        });
     });
 
     //subscribers send to this port to sign up for messages
-    publishSocket.listen(pubPort, localhost);
+    publishSocket.listen(pubPort, LOCALHOST);
     console.log('publish listener on ' + pubPort);
 };
 
 const run = () => {
-    const subPort = process.argv[2];
-    const pubPort = process.argv[3];
+    const subPort = processInput(process.argv[2], validateNumber, USAGE);
+    const pubPort = processInput(process.argv[3], validateNumber, USAGE);
 
     initSubscribe(subPort);
     initPublish(pubPort);
 }
 
 run();
+
+//TODO:
+//1) consider dupes
+//2) try/catch error handling
+//3) unit tests
+//4) consider pulling out handling sub and pub handlers
