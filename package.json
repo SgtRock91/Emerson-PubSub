@@ -4,7 +4,7 @@
   "description": "Emerson Pub Sub Assignment",
   "main": "server.js",
   "scripts": {
-    "test": "echo TODO",
+    "test": "jest",
     "server": "node server 4000 4001",
     "sub": "node subscriber 4000 5000",
     "pub": "node publisher 4001 'MSG'"
@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/SgtRock91/PubSub/issues"
   },
-  "homepage": "https://github.com/SgtRock91/PubSub#readme"
+  "homepage": "https://github.com/SgtRock91/PubSub#readme",
+  "devDependencies": {
+    "jest": "^27.4.7"
+  }
 }
