@@ -7,17 +7,29 @@ Start the server with
 ```
 node server <sub port> <pub port>
 ```
+Can use default ports 4000 and 4001 with
+```
+npm run server
+```
 
 ### Subscriber
 Start and subscribe the subscriber with
 ```
 node subscriber <server sub signup port> <this subscriber port>
 ```
+Can use default ports 4000 and 5000 with
+```
+npm run sub
+```
 
 ### Publish Message
 You can publish a message like so
 ```
 node publisher <pub port> <'message'>
+```
+Can use default port 400 and message of MSG with
+```
+npm run pub
 ```
 
 ### Architecture Diagram
