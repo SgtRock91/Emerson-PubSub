@@ -1,3 +1,7 @@
+//basically determining if its a number. Doesnt work perfect, edge cases include 400j1g. Use regex or something.
+const validateNumber = (input) => (!isNaN(parseInt(input, 10)));
+const validateString = (input) => (typeof input === 'string');
+
 const processInput = (input, validator, helpMessage) => {
     if(input === '-h') {
         console.log(helpMessage);
@@ -10,4 +14,8 @@ const processInput = (input, validator, helpMessage) => {
     }
 };
 
-module.exports = { processInput };
+module.exports = {
+    processInput,
+    validateNumber,
+    validateString,
+};
