@@ -32,3 +32,7 @@ const run = () => {
 };
 
 run();
+
+//super weird bug:
+//if process is started with npm command then cmd+c, the server wont fail to send to port
+//if process is started with node node subscriber <server sub signup port> <this sub port> then cmd+c, the server will fail to sent to port

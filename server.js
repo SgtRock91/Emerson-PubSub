@@ -15,9 +15,11 @@ const initSubscribe = (subPort) => {
             const subscriberPort = data.toString();
             console.log('subscriber port received: ' + subscriberPort);
 
-            //add subscriber
-            subscribers = subscribers.concat(subscriberPort);
-
+            //add subscriber if not on list
+            if (!subscribers.some((sub) => sub === subscriberPort)) {
+                subscribers = subscribers.concat(subscriberPort);
+            }
+            
             //let sender know we got the their message so they can close out
             socket.write('subscribed');
             socket.pipe(socket);
@@ -29,21 +31,31 @@ const initSubscribe = (subPort) => {
     console.log('subscribe listener on ' + subPort);
 };
 
+const pubMsgToSubs = (msg) => {
+    subscribers.forEach((subscriber) => {
+        const client = new net.Socket();
+        client.connect(subscriber, LOCALHOST, () => {
+            client.write(msg);
+            client.destroy();
+        });
+        client.on('error', () => {
+            //not ideal editing list while iterating, can tune this further.
+            console.log('error sending to ' + subscriber);
+            subscribers = subscribers.filter((sub) => sub !== subscriber); // remove failed sub from list
+            client.destroy();
+        });
+    });
+}
+
 const initPublish = (pubPort) => {
     //create publish port for messages to come in
     const publishSocket = net.createServer((socket) => {
         socket.on('data', (data) => {
             //get message from data
-            const message = data.toString();
-            console.log('publishing message: ' + message);
+            const msg = data.toString();
+            console.log('publishing message: ' + msg);
 
-            subscribers.forEach((subscriber) => {
-                const client = new net.Socket();
-                client.connect(subscriber, LOCALHOST, () => {
-                    client.write(message);
-                    client.destroy();
-                });
-            })
+            pubMsgToSubs(msg);
 
             //let sender know we got the their message so they can close out
             socket.write('message sent');
@@ -65,9 +77,3 @@ const run = () => {
 }
 
 run();
-
-//TODO:
-//1) consider dupes
-//2) try/catch error handling
-//3) unit tests
-//4) consider pulling out handling sub and pub handlers
