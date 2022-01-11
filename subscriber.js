@@ -9,7 +9,7 @@ const initSubscriber = (subPort) => {
 		socket.on('data', (data) => {
 			console.log('Message received: ' + data.toString());
 			socket.pipe(socket);
-		})
+		});
 	});
 	//subscribers send to this port to sign up for messages
 	subscriberSocket.listen(subPort, LOCALHOST);
@@ -21,7 +21,7 @@ const subscribeToServer = (serverPort, subPort) => {
 	const client = new net.Socket();
 	client.connect(serverPort, LOCALHOST, () => client.write(subPort));
 	client.on('data', ()=> client.destroy());
-}
+};
 
 const run = () => {
 	const serverPort = processInput(process.argv[2], validateNumber, USAGE);

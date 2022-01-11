@@ -45,7 +45,7 @@ const pubMsgToSubs = (msg) => {
             client.destroy();
         });
     });
-}
+};
 
 const initPublish = (pubPort) => {
     //create publish port for messages to come in
@@ -74,6 +74,6 @@ const run = () => {
 
     initSubscribe(subPort);
     initPublish(pubPort);
-}
+};
 
 run();

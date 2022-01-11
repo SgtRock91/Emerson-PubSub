@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "jest",
+    "lint": "eslint . ./shared --ext .js",
     "server": "node server 4000 4001",
     "sub": "node subscriber 4000 5000",
     "pub": "node publisher 4001 'MSG'"
@@ -21,6 +22,7 @@
   },
   "homepage": "https://github.com/SgtRock91/PubSub#readme",
   "devDependencies": {
+    "eslint": "^8.6.0",
     "jest": "^27.4.7"
   }
 }
