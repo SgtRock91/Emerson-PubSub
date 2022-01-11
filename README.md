@@ -35,3 +35,21 @@ npm run pub
 ### Architecture Diagram
 
 ![image info](./diagrams/ArchitectureDiagram.jpg)
+
+### Other Commands
+Tests
+```
+npm run test
+```
+
+Eslint
+```
+npm run lint
+```
+
+### Ideas if infinite time
+
+1) TypeScript
+2) multi-channel per server (currently single channel)
+3) -v setting for optional detailed logging
+4) react front end to sub/pub with server via websockets with something like this: https://www.valentinog.com/blog/socket-react/
