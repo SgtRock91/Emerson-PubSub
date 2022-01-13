@@ -20,7 +20,10 @@ const subscribeToServer = (serverPort, subPort) => {
 	//subscribe the port we're listening on
 	const client = new net.Socket();
 	client.connect(serverPort, LOCALHOST, () => client.write(subPort));
-	client.on('data', ()=> client.destroy());
+	client.on('data', (data)=> {
+		console.log('Last message was: ' + data.toString());
+		client.destroy();
+	});
 };
 
 const run = () => {

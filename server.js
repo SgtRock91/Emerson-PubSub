@@ -6,6 +6,7 @@ const USAGE = 'node server <subscribe port> <publish port>';
 
 //current subscribers to send a published message to
 let subscribers = [];
+let lastMsg = 'No messages yet.'
 
 const initSubscribe = (subPort) => {
     //create subscribe port for subs to hook into
@@ -21,7 +22,7 @@ const initSubscribe = (subPort) => {
             }
             
             //let sender know we got the their message so they can close out
-            socket.write('subscribed');
+            socket.write('Last message: ' + lastMsg);
             socket.pipe(socket);
         });
     });
@@ -31,19 +32,21 @@ const initSubscribe = (subPort) => {
     console.log('subscribe listener on ' + subPort);
 };
 
-const pubMsgToSubs = (msg) => {
+const pubMsgToSubs = (msg, to) => {
     subscribers.forEach((subscriber) => {
-        const client = new net.Socket();
-        client.connect(subscriber, LOCALHOST, () => {
-            client.write(msg);
-            client.destroy();
-        });
-        client.on('error', () => {
-            //not ideal editing list while iterating, can tune this further.
-            console.log('error sending to ' + subscriber);
-            subscribers = subscribers.filter((sub) => sub !== subscriber); // remove failed sub from list
-            client.destroy();
-        });
+        if(to === undefined || to === subscriber) {
+            const client = new net.Socket();
+            client.connect(subscriber, LOCALHOST, () => {
+                client.write(msg);
+                client.destroy();
+            });
+            client.on('error', () => {
+                //not ideal editing list while iterating, can tune this further.
+                console.log('error sending to ' + subscriber);
+                subscribers = subscribers.filter((sub) => sub !== subscriber); // remove failed sub from list
+                client.destroy();
+            });
+        }
     });
 };
 
@@ -52,10 +55,15 @@ const initPublish = (pubPort) => {
     const publishSocket = net.createServer((socket) => {
         socket.on('data', (data) => {
             //get message from data
-            const msg = data.toString();
+            const pubDataArray = data.toString().split(',');
+            const msg = pubDataArray[0];
+            const to = pubDataArray[1];
+
             console.log('publishing message: ' + msg);
 
-            pubMsgToSubs(msg);
+            pubMsgToSubs(msg, to);
+            //reset last message
+            lastMsg = msg;
 
             //let sender know we got the their message so they can close out
             socket.write('message sent');
