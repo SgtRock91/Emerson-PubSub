@@ -53,3 +53,10 @@ npm run lint
 2) multi-channel per server (currently single channel)
 3) -v setting for optional detailed logging
 4) react front end to sub/pub with server via websockets with something like this: https://www.valentinog.com/blog/socket-react/
+
+
+### Feedback
+
+  // to string on buffer?
+  // hesistency on new tech?
+  // dileation on when to test?
